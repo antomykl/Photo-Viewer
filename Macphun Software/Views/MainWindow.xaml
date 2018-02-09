@@ -1,0 +1,49 @@
+﻿<Window x:Class="Photoviewer.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:dragDrop="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"        
+        xmlns:ViewModels="clr-namespace:Photoviewer.ViewModels"
+        xmlns:local="clr-namespace:Photoviewer.Views"
+        mc:Ignorable="d"
+        Title="Photoviewer (Macphun Software Test, AMS)" Height="600" Width="830" MinHeight="600" MinWidth="830" AllowDrop="True" WindowStartupLocation="CenterScreen">
+    <Window.DataContext>
+        <ViewModels:ViewModel/>
+    </Window.DataContext>
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="VisibilityConverter"/>
+    </Window.Resources>    
+    <Window.InputBindings>
+        <MouseBinding Command="{Binding OpenSecondView}" Gesture="LeftDoubleClick"/>        
+        <KeyBinding Command="{Binding ViewPreviousPhoto}" Key="Up"/>
+        <KeyBinding Command="{Binding ViewNextPhoto}"     Key="Down" />
+        <KeyBinding Command="{Binding ReturnToMainView}"  Key="Esc" />
+    </Window.InputBindings>
+    <Grid dragDrop:DragDrop.IsDropTarget="True" dragDrop:DragDrop.DropHandler="{Binding}">        
+        <ListView x:Name="CollectionList" ItemsSource="{Binding ImagesCollection, IsAsync=True}"
+                  SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                  Visibility="{Binding IsMainViewVisible, Converter={StaticResource VisibilityConverter}}"                  
+                  SelectedIndex="{Binding SelectedPhotoviewerImageIndex}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <Image Width="250" Height="250" Margin="5" Source="{Binding Path=Bitmap}" Stretch="UniformToFill">
+                            <Image.InputBindings>
+                                <MouseBinding Command="{Binding DataContext.OpenPhotoView, 
+                                    RelativeSource={RelativeSource AncestorType=ItemsControl}}"  MouseAction="LeftDoubleClick"/>
+                            </Image.InputBindings>
+                        </Image>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel IsItemsHost="True" Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+        </ListView>
+        <Label x:Name="Display" Content="{Binding Display, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16"/>
+        <local:SecondView x:Name="SecondView"/>        
+    </Grid>
+</Window>

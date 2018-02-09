@@ -1,0 +1,39 @@
+﻿<UserControl
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    x:Class="Photoviewer.Views.SecondView"
+    mc:Ignorable="d" 
+    d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="VisibilityConverter"/>
+        <Style TargetType="Button">            
+            <Setter Property="Margin" Value="2" />
+            <Setter Property="Background" Value="{x:Null}" />            
+        </Style>
+    </UserControl.Resources>
+    <UserControl.Style>
+        <Style TargetType="{x:Type UserControl}">
+            <Setter Property="Visibility" Value="{Binding IsSecondViewVisible, Converter={StaticResource VisibilityConverter }}"></Setter>
+        </Style>
+    </UserControl.Style>   
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="50"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="1" Height="185" Margin="5" VerticalAlignment="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Button        Content="Up"   Command="{Binding ViewPreviousPhoto}"/>
+            <ToggleButton  Content="BLUR" Command="{Binding GaussianBlurEffect}" Grid.Row="1" />
+            <Button        Content="Down" Command="{Binding ViewNextPhoto}"      Grid.Row="2"/>           
+        </Grid>
+        <Image Source="{Binding Path=PhotoToView, UpdateSourceTrigger=PropertyChanged}"
+               Effect="{Binding BlurEffect}" Margin="5"/>        
+    </Grid>
+</UserControl>
